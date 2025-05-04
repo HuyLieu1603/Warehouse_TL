@@ -1,4 +1,4 @@
-import { TypeToken } from "../common/type.common.js";
+import { TypeToken } from '../common/type.common.js';
 
 export const wrapRequestHandler = (func) => {
   return async (req, res, next) => {

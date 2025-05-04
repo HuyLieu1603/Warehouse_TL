@@ -1,4 +1,4 @@
-import User from "../models/user.model.js";
+import User from '../models/user.models.js';
 
 // Check email is already exist
 export const checkEmailExist = async (email) => {
@@ -12,7 +12,7 @@ export const createUser = async (data) => {
     const user = await User.create(data);
     return user;
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error('Error creating user:', error);
     return null;
   }
 };
@@ -24,7 +24,7 @@ export const updatePassword = async (userID, password) => {
   const user = await User.findByIdAndUpdate(
     { _id: userID },
     { password },
-    { new: true }
+    { new: true },
   );
   return Boolean(user);
 };
@@ -34,7 +34,7 @@ export const updateStatusUser = async (userID, status) => {
   const User = await User.findByIdAndUpdate(
     { _id: userID },
     { status },
-    { new: true }
+    { new: true },
   );
   return Boolean(User);
 };
