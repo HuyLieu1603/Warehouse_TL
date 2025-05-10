@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 import {
   checkEmailExist,
+  checkSession,
   createUser,
   updatePassword,
 } from '../services/auth.service.js';
@@ -82,6 +83,26 @@ export const authController = {
       message: 'Đăng nhập thành công!',
       success: true,
       accessToken,
+    });
+  },
+
+  checkSession: async (req, res) => {
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+    if (!token)
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        message: 'Vui lòng cung cấp token',
+        success: false,
+      });
+    const decoded = await checkSession(token);
+    if (!decoded)
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        message: 'Token không hợp lệ',
+        success: false,
+      });
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Token hợp lệ',
+      success: true,
+      data: decoded,
     });
   },
 };

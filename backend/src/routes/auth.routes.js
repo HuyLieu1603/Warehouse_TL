@@ -11,6 +11,9 @@ import { authController } from '../controllers/auth.controller.js';
 
 const router = express.Router();
 
+//Verify token
+router.get('/verify-token', wrapRequestHandler(authController.verifyToken));
+
 //REGISTER
 router.post(
   '/register',
