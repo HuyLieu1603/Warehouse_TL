@@ -12,7 +12,7 @@ import { authController } from '../controllers/auth.controller.js';
 const router = express.Router();
 
 //Verify token
-router.get('/verify-token', wrapRequestHandler(authController.verifyToken));
+router.get('/check', wrapRequestHandler(authController.checkSession));
 
 //REGISTER
 router.post(
@@ -27,5 +27,8 @@ router.post(
   wrapRequestHandler(validationLogin),
   wrapRequestHandler(authController.login),
 );
+
+//LOG OUT
+router.post('/logout', wrapRequestHandler(authController.logOut));
 
 export default router;

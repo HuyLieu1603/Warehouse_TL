@@ -16,6 +16,7 @@ export const createUser = async (data) => {
     return null;
   }
 };
+
 export const getUser = async (userID) => {
   return await User.findById(userID);
 };
@@ -39,7 +40,7 @@ export const updateStatusUser = async (userID, status) => {
   return Boolean(User);
 };
 
-export const checkSession = async (token) => {
+export const checkSessionUser = async (token) => {
   const decoded = await jwt.verify(token, process.env.JWT_SECRET);
   return decoded;
 };

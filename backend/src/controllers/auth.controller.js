@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import {
   checkEmailExist,
-  checkSession,
+  checkSessionUser,
   createUser,
   updatePassword,
 } from '../services/auth.service.js';
@@ -17,17 +17,11 @@ dotenv.config();
 export const authController = {
   register: async (req, res) => {
     const body = req.body;
-
+    console.log(body);
     const isExist = await checkEmailExist(body.email);
     if (isExist)
       return res.status(HTTP_STATUS.BAD_REQUEST).json({
         message: 'Địa chỉ email đã được sử dụng',
-        success: false,
-      });
-
-    if (body.password !== body.confirmPassword)
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message: 'Mật khẩu không khớp',
         success: false,
       });
 
@@ -57,7 +51,6 @@ export const authController = {
 
   login: async (req, res) => {
     const body = req.body;
-    console.log(body);
     //Check
     const user = await checkEmailExist(body.email);
     if (!user)
@@ -79,30 +72,51 @@ export const authController = {
     const accessToken = await handleGenerateToken({
       payload: { _id: user._id, email: user.email, role: user.role },
     });
+    res.cookie('token', accessToken, {
+      httpOnly: true, // ❗ Không cho JS truy cập cookie
+      secure: false, // ✅ true nếu dùng HTTPS
+      sameSite: 'Lax',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
     return res.status(HTTP_STATUS.OK).json({
       message: 'Đăng nhập thành công!',
       success: true,
-      accessToken,
+      user,
     });
   },
 
-  checkSession: async (req, res) => {
-    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
-    if (!token)
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message: 'Vui lòng cung cấp token',
-        success: false,
-      });
-    const decoded = await checkSession(token);
-    if (!decoded)
-      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
-        message: 'Token không hợp lệ',
-        success: false,
-      });
-    return res.status(HTTP_STATUS.OK).json({
-      message: 'Token hợp lệ',
-      success: true,
-      data: decoded,
+  logOut: async (req, res) => {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Strict',
     });
+    return res.status(HTTP_STATUS.OK).json({ message: 'Logged out' });
+  },
+
+  checkSession: async (req, res) => {
+    try {
+      const token =
+        req.cookies.token || req.headers.authorization?.split(' ')[1] || null;
+      if (!token)
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+          message: 'Vui lòng cung cấp token',
+          success: false,
+        });
+      const decoded = await checkSessionUser(token);
+      if (!decoded)
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+          message: 'Token không hợp lệ',
+          success: false,
+        });
+      return res.status(HTTP_STATUS.OK).json({
+        message: 'Token hợp lệ',
+        success: true,
+        data: decoded,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   },
 };

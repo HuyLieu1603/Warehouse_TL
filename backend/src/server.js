@@ -4,6 +4,7 @@ import express from 'express';
 import swaggerUI from 'swagger-ui-express';
 import connectDB from './configs/connect-db.configs.js';
 import rootRoutes from './routes/index.js';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ const app = express();
 
 //middlewares
 app.use(express.json());
+app.use(cookieParser());
 
 app.use(
   cors({
@@ -22,6 +24,7 @@ app.use(
       'http://localhost:3039',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
   }),
 );
 
