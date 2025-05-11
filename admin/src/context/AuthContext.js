@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     checkAuth()
-      .then((res) => setUser(res.data.user))
+      .then((res) => setUser(res.data.data))
       .catch(() => {
         setUser(null);
       })

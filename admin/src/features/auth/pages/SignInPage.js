@@ -15,13 +15,12 @@ export default function SignInPage() {
       const res = await login(form);
       const token = res.data.token;
 
-      // ✅ Lưu token vào localStorage
-      localStorage.setItem("token", token);
+      // // ✅ Lưu token vào localStorage
+      // localStorage.setItem("token", token);
 
       // ✅ Lưu user vào context
       setUser(res.data.user);
 
-      console.log("User:", res.data.user);
       navigate("/");
     } catch (err) {
       alert("Đăng nhập thất bại!");

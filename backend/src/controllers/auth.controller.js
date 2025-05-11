@@ -89,8 +89,8 @@ export const authController = {
   logOut: async (req, res) => {
     res.clearCookie('token', {
       httpOnly: true,
-      secure: true,
-      sameSite: 'Strict',
+      secure: false,
+      sameSite: 'None',
     });
     return res.status(HTTP_STATUS.OK).json({ message: 'Logged out' });
   },
@@ -116,7 +116,11 @@ export const authController = {
         data: decoded,
       });
     } catch (error) {
-      console.log(error);
+      console.error('Lỗi checkSession:', error);
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        success: false,
+        message: 'Lỗi máy chủ',
+      });
     }
   },
 };

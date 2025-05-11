@@ -1,4 +1,5 @@
 import User from '../models/user.models.js';
+import jwt from 'jsonwebtoken';
 
 // Check email is already exist
 export const checkEmailExist = async (email) => {
@@ -41,6 +42,6 @@ export const updateStatusUser = async (userID, status) => {
 };
 
 export const checkSessionUser = async (token) => {
-  const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+  const decoded = await jwt.verify(token, process.env.SECRET_KEY);
   return decoded;
 };
